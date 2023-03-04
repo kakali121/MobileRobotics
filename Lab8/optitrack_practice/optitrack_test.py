@@ -15,13 +15,13 @@ def receive_rigid_body_frame(robot_id, position, rotation_quaternion):
 
     rotx, roty, rotz = quaternion_to_euler_angle_vectorized1(rotation_quaternion)
 
-    rotations[robot_id] = (rotx, roty, rotz)
+    rotations[robot_id] = rotz
 
 
 if __name__ == "__main__":
     clientAddress = "192.168.0.16"
     optitrackServerAddress = "192.168.0.4"
-    robot_id = 212
+    robot_id = 12
 
     # This will create a new NatNet client
     streaming_client = NatNetClient()
@@ -34,17 +34,8 @@ if __name__ == "__main__":
     # Start up the streaming client now that the callbacks are set up.
     # This will run perpetually, and operate on a separate thread.
     is_running = streaming_client.run()
-    start = time.time()
-    end = time.time()
-    file = open("log4.txt", "a+")
-    while is_running and int(end - start) < 60:
-        print("Running... Press Ctrl-C to stop")
+    while is_running:
         if robot_id in positions:
             # last position
-            end = time.time()
-            time_elasped = end - start
-            file.write(str(time_elasped) + " " + str(positions[robot_id]) + " " + str(rotations[robot_id]) + "\n")
-            print('Time elapsed', time_elasped)
             print('Last position', positions[robot_id], ' rotation', rotations[robot_id])
-            time.sleep(0.5)
-    file.close()
+            time.sleep(1)
